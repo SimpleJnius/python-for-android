@@ -221,7 +221,7 @@ def compile_py_file(python_file, optimize_python=True):
 
 
 def make_package(args):
-    google_service_json = os.path.join(os.dirname(__file__).split(".buildozer")[0], "google-services.json")
+    google_service_json = join(dirname(__file__).split(".buildozer")[0], "google-services.json")
     if exists(google_service_json):
         shutil.copy(google_service_json, dirname(__file__))
     # If no launcher is specified, require a main.py/main.pyc:
