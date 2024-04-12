@@ -3,14 +3,6 @@ PIP=$(VIRTUAL_ENV)/bin/pip
 TOX=`which tox`
 ACTIVATE=$(VIRTUAL_ENV)/bin/activate
 PYTHON=$(VIRTUAL_ENV)/bin/python
-FLAKE8=$(VIRTUAL_ENV)/bin/flake8
-PYTEST=$(VIRTUAL_ENV)/bin/pytest
-SOURCES=src/ tests/
-PYTHON_MAJOR_VERSION=3
-PYTHON_MINOR_VERSION=6
-PYTHON_VERSION=$(PYTHON_MAJOR_VERSION).$(PYTHON_MINOR_VERSION)
-PYTHON_MAJOR_MINOR=$(PYTHON_MAJOR_VERSION)$(PYTHON_MINOR_VERSION)
-PYTHON_WITH_VERSION=python$(PYTHON_VERSION)
 DOCKER_IMAGE=kivy/python-for-android
 ANDROID_SDK_HOME ?= $(HOME)/.android/android-sdk
 ANDROID_NDK_HOME ?= $(HOME)/.android/android-ndk
@@ -31,8 +23,12 @@ virtualenv: $(VIRTUAL_ENV)
 test:
 	$(TOX) -- tests/ --ignore tests/test_pythonpackage.py
 
+# Also install and configure rust
 rebuild_updated_recipes: virtualenv
 	. $(ACTIVATE) && \
+	curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+	. "$(HOME)/.cargo/env" && \
+	rustup target list && \
 	ANDROID_SDK_HOME=$(ANDROID_SDK_HOME) ANDROID_NDK_HOME=$(ANDROID_NDK_HOME) \
 	$(PYTHON) ci/rebuild_updated_recipes.py $(REBUILD_UPDATED_RECIPES_EXTRA_ARGS)
 
