@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.1'
-    	classpath 'com.google.gms:google-services:4.4.0'
+    	classpath 'com.google.gms:google-services:4.4.1'
     }
 }
 
@@ -117,7 +117,7 @@ dependencies {
     {%- for jar in jars %}
     implementation files('src/main/libs/{{ jar }}')
     {%- endfor -%}
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    implementation platform('com.google.firebase:firebase-bom:32.8.1')
     {%- if args.depends -%}
     {%- for depend in args.depends %}
     implementation '{{ depend }}'
