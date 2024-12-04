@@ -4,6 +4,7 @@ TOX=`which tox`
 ACTIVATE=$(VIRTUAL_ENV)/bin/activate
 PYTHON=$(VIRTUAL_ENV)/bin/python
 DOCKER_IMAGE=kivy/python-for-android
+DOCKER_TAG=latest
 ANDROID_SDK_HOME ?= $(HOME)/.android/android-sdk
 ANDROID_NDK_HOME ?= $(HOME)/.android/android-ndk
 ANDROID_NDK_HOME_LEGACY ?= $(HOME)/.android/android-ndk-legacy
@@ -31,6 +32,20 @@ rebuild_updated_recipes: virtualenv
 	rustup target list && \
 	ANDROID_SDK_HOME=$(ANDROID_SDK_HOME) ANDROID_NDK_HOME=$(ANDROID_NDK_HOME) \
 	$(PYTHON) ci/rebuild_updated_recipes.py $(REBUILD_UPDATED_RECIPES_EXTRA_ARGS)
+
+# make ARCH=armeabi-v7a,arm64-v8a ARTIFACT=apk BOOTSTRAP=sdl2 MODE=debug REQUIREMENTS=python testapps-generic
+testapps-generic: virtualenv
+	@if [ -z "$(ARCH)" ]; then echo "ARCH is not set"; exit 1; fi
+	@if [ -z "$(ARTIFACT)" ]; then echo "ARTIFACT is not set"; exit 1; fi
+	@if [ -z "$(BOOTSTRAP)" ]; then echo "BOOTSTRAP is not set"; exit 1; fi
+	@if [ -z "$(MODE)" ]; then echo "MODE is not set"; exit 1; fi
+	@if [ -z "$(REQUIREMENTS)" ]; then echo "REQUIREMENTS is not set"; exit 1; fi
+	@ARCH_FLAGS=$$(echo "$(ARCH)" | tr ',' ' ' | sed 's/\([^ ]\+\)/--arch=\1/g'); \
+	. $(ACTIVATE) && cd testapps/on_device_unit_tests/ && \
+    python setup.py $(ARTIFACT) \
+    --sdk-dir $(ANDROID_SDK_HOME) \
+    --ndk-dir $(ANDROID_NDK_HOME) \
+    $$ARCH_FLAGS --bootstrap $(BOOTSTRAP) --$(MODE) --requirements $(REQUIREMENTS)
 
 testapps-with-numpy: testapps-with-numpy/debug/apk testapps-with-numpy/release/aab
 
@@ -118,10 +133,13 @@ docker/build:
 	docker build --cache-from=$(DOCKER_IMAGE) --tag=$(DOCKER_IMAGE) .
 
 docker/login:
-	@echo $(DOCKERHUB_TOKEN) | docker login --username $(DOCKERHUB_USERNAME) --password-stdin
+	@echo $$DOCKERHUB_TOKEN | docker login --username $(DOCKERHUB_USERNAME) --password-stdin
+
+docker/tag:
+	docker tag $(DOCKER_IMAGE):latest $(DOCKER_IMAGE):$(DOCKER_TAG)
 
 docker/push:
-	docker push $(DOCKER_IMAGE)
+	docker push $(DOCKER_IMAGE):$(DOCKER_TAG)
 
 docker/run/test: docker/build
 	docker run --rm --env-file=.env $(DOCKER_IMAGE) 'make test'

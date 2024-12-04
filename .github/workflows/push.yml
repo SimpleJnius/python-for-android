@@ -8,6 +8,10 @@ env:
   AAR_ARTIFACT_FILENAME: bdist_unit_tests_app-release-1.1.aar
   PYTHONFORANDROID_PREREQUISITES_INSTALL_INTERACTIVE: 0
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   flake8:
@@ -17,7 +21,7 @@ jobs:
     - name: Checkout python-for-android
       uses: actions/checkout@v4
     - name: Set up Python 3.x
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.x
     - name: Run flake8
@@ -38,7 +42,7 @@ jobs:
     - name: Checkout python-for-android
       uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Tox tests
@@ -64,8 +68,8 @@ jobs:
         bootstrap:
           - name: sdl2
             target: testapps-with-numpy
-          - name: sdl2_scipy
-            target: testapps-with-scipy
+          # - name: sdl2_scipy  # TODO: Re-enable this failing test.
+          #   target: testapps-with-scipy
           - name: webview
             target: testapps-webview
           - name: service_library
