@@ -48,6 +48,9 @@ class JpegRecipe(Recipe):
                     # Force disable shared, with the static ones is enough
                     '-DENABLE_SHARED=0',
                     '-DENABLE_STATIC=1',
+
+                    # Fix cmake compatibility issue
+                    '-DCMAKE_POLICY_VERSION_MINIMUM=3.5',
                     _env=env)
             shprint(sh.make, _env=env)
 
