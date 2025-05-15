@@ -29,12 +29,25 @@ class LibSDL3Image(BootstrapNDKRecipe):
     def prebuild_arch(self, arch):
         # We do not have a folder for each arch on BootstrapNDKRecipe, so we
         # need to skip the external deps download if we already have done it.
-        external_deps_dir = os.path.join(
-            self.get_build_dir(arch.arch), "external"
-        )
-        if not os.path.exists(os.path.join(external_deps_dir, "libwebp")):
-            with current_directory(external_deps_dir):
-                shprint(sh.Command("./download.sh"))
+        build_dir = self.get_build_dir(arch.arch)
+
+        with open(os.path.join(build_dir, ".gitmodules"), "r") as file:
+            for section in file.read().split('[submodule "')[1:]:
+                line_split = section.split(" = ")
+                # Parse .gitmodule section
+                clone_path, url, branch = (
+                    os.path.join(build_dir, line_split[1].split("\n")[0].strip()),
+                    line_split[2].split("\n")[0].strip(),
+                    line_split[-1].strip()
+                )
+                # Clone if needed
+                if not os.path.exists(clone_path) or not os.listdir(clone_path):
+                    shprint(
+                        sh.git, "clone", url,
+                        "--depth", "1", "-b",
+                        branch, clone_path, "--recursive"
+                    )
+        
         super().prebuild_arch(arch)
 
 
