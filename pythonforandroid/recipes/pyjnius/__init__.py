@@ -14,6 +14,7 @@ class PyjniusRecipe(PyProjectRecipe):
 
     patches = [
         "use_cython.patch",
+        "cython_version_pin.patch",
         ('genericndkbuild_jnienv_getter.patch', will_build('genericndkbuild')),
         ('sdl3_jnienv_getter.patch', will_build('sdl3')),
     ]
