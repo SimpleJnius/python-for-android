@@ -71,7 +71,6 @@ RUN ${RETRY} apt -y update -qq > /dev/null \
         make \
         openjdk-17-jdk \
         patch \
-        patchelf \
         pkg-config \
         python3 \
         python3-dev \

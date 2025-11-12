@@ -25,14 +25,25 @@ class KivyRecipe(PyProjectRecipe):
     url = 'https://github.com/kivy/kivy/archive/{version}.zip'
     name = 'kivy'
 
-    depends = [('sdl2', 'sdl3'), 'pyjnius', 'setuptools']
+    depends = [('sdl2', 'sdl3'), 'pyjnius', 'setuptools', 'android']
     python_depends = ['certifi', 'chardet', 'idna', 'requests', 'urllib3', 'filetype']
-    hostpython_prerequisites = []
+    hostpython_prerequisites = ["cython>=0.29.1,<=3.0.12"]
 
     # sdl-gl-swapwindow-nogil.patch is needed to avoid a deadlock.
     # See: https://github.com/kivy/kivy/pull/8025
     # WARNING: Remove this patch when a new Kivy version is released.
-    patches = [("sdl-gl-swapwindow-nogil.patch", is_kivy_affected_by_deadlock_issue), "use_cython.patch"]
+    patches = [
+        ("sdl-gl-swapwindow-nogil.patch", is_kivy_affected_by_deadlock_issue),
+        "use_cython.patch",
+        "no-ast-str.patch"
+    ]
+
+    @property
+    def need_stl_shared(self):
+        if "sdl3" in self.ctx.recipe_build_order:
+            return True
+        else:
+            return False
 
     def get_recipe_env(self, arch, **kwargs):
         env = super().get_recipe_env(arch, **kwargs)
