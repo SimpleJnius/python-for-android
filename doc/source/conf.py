@@ -319,6 +319,9 @@ linkcheck_ignore = [
 
     # GitHub parses anchor tags differently to pure HTML
     r"https://github.com/kivy/python-for-android/blob.*",
+
+    # Ubuntu Pastebin asks automated programs not to access the site.
+    r"https://pastebin\.ubuntu\.com/$",
     ]
 
 # Allow redirects for URLs where we prefer to keep the original form

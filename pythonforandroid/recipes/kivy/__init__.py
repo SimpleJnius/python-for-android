@@ -43,7 +43,7 @@ class KivyRecipe(PyProjectRecipe):
     patches = [
         ("sdl-gl-swapwindow-nogil.patch", is_kivy_affected_by_deadlock_issue),
         ("use_cython.patch", is_kivy_less_than_3),
-        "no-ast-str.patch"
+        ("no-ast-str.patch", is_kivy_less_than_3),
     ]
 
     @property

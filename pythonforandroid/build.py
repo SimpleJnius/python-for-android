@@ -868,15 +868,11 @@ def run_pymodules_install(ctx, arch, modules, project_dir=None,
     # Use our hostpython to create the virtualenv
     host_python = sh.Command(ctx.hostpython)
     with current_directory(join(ctx.build_dir)):
-        shprint(host_python, '-m', 'venv', 'venv')
+        shprint(host_python, '-m', 'venv', '--clear', 'venv')
 
-        # Prepare base environment and upgrade pip:
+        # Prepare base environment:
         base_env = dict(copy.copy(os.environ))
         base_env["PYTHONPATH"] = ctx.get_site_packages_dir(arch)
-        info('Upgrade pip to latest version')
-        shprint(sh.bash, '-c', (
-            "source venv/bin/activate && pip install -U pip"
-        ), _env=copy.copy(base_env))
 
         # Install Cython in case modules need it to build:
         info('Install Cython in case one of the modules needs it to build')

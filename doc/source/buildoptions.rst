@@ -63,7 +63,7 @@ options (this list may not be exhaustive):
   python-for-android computes it from ``--version``. If the computed value is
   too large, keep the display version in ``--version`` and set a valid
   ``--numeric-version``. See Android's
-  `versionCode documentation <https://developer.android.com/tools/publishing/versioning>`__.
+  `versionCode documentation <https://developer.android.com/studio/publish/versioning>`__.
 - ``--orientation``: The orientations that the app will display in.
   (Available options are ``portrait``, ``landscape``, ``portrait-reverse``, ``landscape-reverse``).
   Since Android ignores ``android:screenOrientation`` when in multi-window mode
@@ -159,7 +159,7 @@ ready.
   python-for-android computes it from ``--version``. If the computed value is
   too large, keep the display version in ``--version`` and set a valid
   ``--numeric-version``. See Android's
-  `versionCode documentation <https://developer.android.com/tools/publishing/versioning>`__.
+  `versionCode documentation <https://developer.android.com/studio/publish/versioning>`__.
 - ``--orientation``: The orientations that the app will display in.
   (Available options are ``portrait``, ``landscape``, ``portrait-reverse``, ``landscape-reverse``).
   Since Android ignores ``android:screenOrientation`` when in multi-window mode
